@@ -11,6 +11,7 @@ use App\Imports\EmployeesImport;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Validators\ValidationException as ExcelValidationException;
+use Illuminate\Database\Eloquent\Builder;
 
 
 
@@ -21,25 +22,8 @@ class EmployeeController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Employee::query();
-
-        if ($search = $request->search){
-            $query->where(function ($q) use ($search){
-            $q->where('firstname', 'like', "%{$search}%")
-            ->orWhere('lastname', 'like', "%{$search}%")
-            ->orWhere('email', 'like', "%{$search}%")
-            ->orWhere('phone', 'like', "%{$search}%");
-            });
-        }
-
-        if ($request->filled('education')){
-            $query->where('education_qualification', $request->education);
-        }
-
-        $sortable = ['employee_id', 'firstname', 'lastname', 'date_of_birth', 'education_qualification', 'email', 'phone'];
-
-        $sort = in_array($request->sort, $sortable)? $request->sort: 'employee_id';
-        $dir = $request->dir === 'asc' ? 'asc': 'desc';
+        $query = $this->employeeQuery($request);
+        [$sort, $dir] = $this->sortOptions($request);
 
         $pageSizes = [10, 25, 50, 100];
         $perPage = (int) $request->input('per_page', 10);
@@ -148,9 +132,43 @@ class EmployeeController extends Controller
     }
 
 
-    public function export()
+    public function export(Request $request)
     {
-        return Excel::download(new EmployeesExport, 'employees.xlsx');
+        [$sort, $dir] = $this->sortOptions($request);
+
+        return Excel::download(
+            new EmployeesExport($this->employeeQuery($request), $sort, $dir),
+            'employees.xlsx'
+        );
+    }
+
+    private function employeeQuery(Request $request): Builder
+    {
+        $query = Employee::query();
+
+        if ($search = $request->search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('firstname', 'like', "%{$search}%")
+                    ->orWhere('lastname', 'like', "%{$search}%")
+                    ->orWhere('email', 'like', "%{$search}%")
+                    ->orWhere('phone', 'like', "%{$search}%");
+            });
+        }
+
+        if ($request->filled('education')) {
+            $query->where('education_qualification', $request->education);
+        }
+
+        return $query;
+    }
+
+    private function sortOptions(Request $request): array
+    {
+        $sortable = ['employee_id', 'firstname', 'lastname', 'date_of_birth', 'education_qualification', 'email', 'phone'];
+        $sort = in_array($request->sort, $sortable, true) ? $request->sort : 'employee_id';
+        $dir = $request->dir === 'asc' ? 'asc' : 'desc';
+
+        return [$sort, $dir];
     }
 
 

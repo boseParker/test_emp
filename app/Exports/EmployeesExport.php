@@ -3,15 +3,23 @@
 namespace App\Exports;
 
 use App\Models\Employee;
+use Illuminate\Database\Eloquent\Builder;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
 
 class EmployeesExport implements FromCollection, WithHeadings, WithMapping
 {
+    public function __construct(
+        private Builder $query,
+        private string $sort = 'employee_id',
+        private string $direction = 'desc'
+    ) {
+    }
+
     public function collection()
     {
-        return Employee::orderBy('employee_id')->get();
+        return $this->query->orderBy($this->sort, $this->direction)->get();
     }
 
     public function headings(): array

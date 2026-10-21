@@ -11,7 +11,7 @@
 @endphp
 
 <div class="row g-3 mb-4">
-    <div class="col-12 col-sm-6 col-xl-3">
+    <div class="col-12 col-sm-6 col-xl-4">
         <div class="dashboard-card p-3 h-100">
             <div class="d-flex justify-content-between align-items-start">
                 <div><div class="text-uppercase small text-muted fw-semibold">Total employees</div><div class="fs-2 fw-bold mt-2">{{ $employees->total() }}</div></div>
@@ -19,7 +19,7 @@
             </div>
         </div>
     </div>
-    <div class="col-12 col-sm-6 col-xl-3">
+    <div class="col-12 col-sm-6 col-xl-4">
         <div class="dashboard-card p-3 h-100">
             <div class="d-flex justify-content-between align-items-start">
                 <div><div class="text-uppercase small text-muted fw-semibold">Qualifications listed</div><div class="fs-2 fw-bold mt-2">{{ count($qualifications) }}</div></div>
@@ -27,19 +27,11 @@
             </div>
         </div>
     </div>
-    <div class="col-12 col-sm-6 col-xl-3">
+    <div class="col-12 col-sm-6 col-xl-4">
         <div class="dashboard-card p-3 h-100">
             <div class="d-flex justify-content-between align-items-start">
                 <div><div class="text-uppercase small text-muted fw-semibold">Current page</div><div class="fs-2 fw-bold mt-2">{{ $employees->count() }}</div></div>
                 <span class="dashboard-icon icon-green"><i class="bi bi-person-check"></i></span>
-            </div>
-        </div>
-    </div>
-    <div class="col-12 col-sm-6 col-xl-3">
-        <div class="dashboard-card p-3 h-100">
-            <div class="d-flex justify-content-between align-items-start">
-                <div><div class="text-uppercase small text-muted fw-semibold">System status</div><div class="fs-4 fw-bold mt-3 status-online"><i class="bi bi-circle-fill"></i> Online</div></div>
-                <span class="dashboard-icon icon-slate"><i class="bi bi-cpu"></i></span>
             </div>
         </div>
     </div>
@@ -48,12 +40,13 @@
 {{-- Search + Filter --}}
 <div class="filter-card mb-4">
     <div class="card-body">
-        <form method="GET" action="{{ route('employees.index') }}" class="row g-2">
-            <div class="col-lg-5">
+        <form method="GET" action="{{ route('employees.index') }}" class="filter-form">
+            <div class="filter-field filter-search">
+                <i class="bi bi-search" aria-hidden="true"></i>
                 <input type="text" name="search" class="form-control"
                        placeholder="Search name, email or phone..." value="{{ request('search') }}">
             </div>
-            <div class="col-lg-3">
+            <div class="filter-field">
                 <select name="education" class="form-select">
                     <option value="">All Qualifications</option>
                     @foreach($qualifications as $q)
@@ -61,15 +54,8 @@
                     @endforeach
                 </select>
             </div>
-            <div class="col-lg-4 d-flex gap-2">
-                <select name="per_page" class="form-select">
-                    @foreach($pageSizes as $size)
-                        <option value="{{ $size }}" @selected($employees->perPage() === $size)>{{ $size }} records per page</option>
-                    @endforeach
-                </select>
-                <button class="btn btn-dark flex-fill"><i class="bi bi-search"></i> Search</button>
-                <a href="{{ route('employees.index') }}" class="btn btn-outline-secondary">Reset</a>
-            </div>
+            <button class="btn btn-dark filter-submit"><i class="bi bi-search me-1"></i> Search</button>
+            <a href="{{ route('employees.index') }}" class="btn btn-outline-secondary filter-reset">Reset</a>
         </form>
     </div>
 </div>
@@ -97,20 +83,20 @@
             <tbody>
                 @forelse($employees as $employee)
                     <tr>
-                        <td>{{ $employee->employee_id }}</td>
-                        <td>
+                        <td data-label="ID">{{ $employee->employee_id }}</td>
+                        <td data-label="Photo">
                             @if($employee->photo)
                                 <img src="{{ asset('storage/' . $employee->photo) }}" class="avatar" alt="photo">
                             @else
                                 <img src="https://ui-avatars.com/api/?name={{ urlencode($employee->full_name) }}&size=45" class="avatar" alt="avatar">
                             @endif
                         </td>
-                        <td>{{ $employee->firstname }}</td>
-                        <td>{{ $employee->lastname }}</td>
-                        <td>{{ $employee->education_qualification }}</td>
-                        <td>{{ $employee->email }}</td>
-                        <td>{{ $employee->phone }}</td>
-                        <td class="text-end">
+                        <td data-label="First Name">{{ $employee->firstname }}</td>
+                        <td data-label="Last Name">{{ $employee->lastname }}</td>
+                        <td data-label="Qualification">{{ $employee->education_qualification }}</td>
+                        <td data-label="Email">{{ $employee->email }}</td>
+                        <td data-label="Phone">{{ $employee->phone }}</td>
+                        <td data-label="Actions" class="text-end">
                             <a href="{{ route('employees.show', $employee) }}" class="btn btn-sm btn-info text-white" title="View"><i class="bi bi-eye"></i></a>
                             <a href="{{ route('employees.edit', $employee) }}" class="btn btn-sm btn-warning" title="Edit"><i class="bi bi-pencil"></i></a>
                             <form action="{{ route('employees.destroy', $employee) }}" method="POST" class="d-inline"

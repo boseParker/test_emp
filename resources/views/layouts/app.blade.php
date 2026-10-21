@@ -21,7 +21,7 @@
         * { box-sizing: border-box; }
         body { margin: 0; background: var(--page); color: var(--ink); font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
         .app-shell { min-height: 100vh; display: flex; }
-        .app-sidebar { width: 270px; flex: 0 0 270px; min-height: 100vh; display: flex; flex-direction: column; background: var(--navy); color: #b8c4d9; }
+        .app-sidebar { position: fixed; z-index: 1030; inset: 0 auto 0 0; width: 270px; height: 100vh; display: flex; flex-direction: column; overflow-y: auto; background: var(--navy); color: #b8c4d9; }
         .brand { display: flex; align-items: center; gap: 12px; min-height: 142px; padding: 24px 20px; border-bottom: 1px solid rgba(255,255,255,.08); }
         .brand-mark { width: 44px; height: 44px; display: grid; place-items: center; border-radius: 12px; background: var(--orange); color: var(--navy); font-size: 20px; font-weight: 800; box-shadow: 0 8px 18px rgba(245,155,0,.25); }
         .brand-name { color: #fff; font-size: 16px; font-weight: 750; line-height: 1.15; }
@@ -35,13 +35,15 @@
         .user-avatar { width: 36px; height: 36px; display: grid; place-items: center; border: 1px solid var(--orange); border-radius: 50%; color: #fff; font-size: 12px; }
         .user-name { color: #fff; font-size: 12px; font-weight: 700; }
         .user-role { margin-top: 2px; color: #8291aa; font-size: 11px; }
-        .app-main { min-width: 0; flex: 1; }
-        .topbar { min-height: 78px; display: flex; align-items: center; justify-content: space-between; gap: 18px; padding: 16px 32px; background: var(--surface); border-bottom: 1px solid var(--line); }
+        .app-main { min-width: 0; flex: 1; margin-left: 270px; }
+        .topbar { min-height: 78px; display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 16px 32px; background: var(--surface); border-bottom: 1px solid var(--line); }
+        .topbar > div:first-child { min-width: 0; }
         .page-title { margin: 0; font-size: 22px; font-weight: 750; letter-spacing: -.02em; }
         .breadcrumb { margin: 4px 0 0; color: var(--muted); font-size: 12px; }
         .breadcrumb span { color: #a5b0c0; padding: 0 6px; }
-        .topbar-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 10px; }
-        .dashboard-content { max-width: 1440px; margin: 0 auto; padding: 28px 32px 42px; }
+        .topbar-actions { display: flex; flex: 0 0 auto; flex-wrap: nowrap; justify-content: flex-end; gap: 10px; }
+        .topbar-actions .btn { white-space: nowrap; }
+        .dashboard-content { width: 100%; max-width: 1440px; margin: 0 auto; padding: 28px 32px 42px; }
         .btn { border-radius: 11px; font-weight: 650; }
         .btn-primary { background: var(--orange); border-color: var(--orange); color: var(--navy); }
         .btn-primary:hover { background: #e58e00; border-color: #e58e00; color: var(--navy); }
@@ -58,28 +60,45 @@
         .status-online { color: #0bb77a; }
         .status-online i { font-size: 9px; vertical-align: middle; }
         .filter-card { padding: 4px; }
-        .filter-card .form-control, .filter-card .form-select { min-height: 40px; border-color: var(--line); border-radius: 10px; color: var(--ink); }
+        .filter-form { display: grid; grid-template-columns: minmax(280px, 1fr) minmax(220px, .7fr) auto auto; gap: 10px; align-items: center; }
+        .filter-field { min-width: 0; position: relative; }
+        .filter-card .form-control, .filter-card .form-select { width: 100%; min-height: 44px; border-color: var(--line); border-radius: 10px; color: var(--ink); }
+        .filter-search .form-control { padding-left: 38px; }
+        .filter-search > i { position: absolute; z-index: 1; top: 50%; left: 14px; color: #8ca0ba; transform: translateY(-50%); }
         .filter-card .form-control:focus, .filter-card .form-select:focus { border-color: #9cb3d8; box-shadow: 0 0 0 .2rem rgba(74, 110, 170, .12); }
+        .filter-submit, .filter-reset { min-height: 44px; white-space: nowrap; }
+        .filter-submit { min-width: 96px; }
+        .filter-reset { min-width: 72px; }
         .records-heading { border-bottom: 1px solid var(--line); }
         .employee-table { min-width: 920px; }
         .employee-table thead th { padding: 15px 18px; background: #f8fafd; color: #71829d; border-bottom: 1px solid var(--line); font-size: 11px; font-weight: 750; letter-spacing: .05em; text-transform: uppercase; white-space: nowrap; }
         .employee-table tbody td { padding: 14px 18px; border-color: var(--line); font-size: 14px; }
         .employee-table tbody tr:last-child td { border-bottom: 0; }
         .employee-table .btn { border-radius: 8px; }
+        .employee-pagination { min-height: 70px; padding: 14px 20px; background: #fbfcfe; border-top: 1px solid var(--line); }
         .employee-pagination nav { margin-bottom: 0; }
         .employee-pagination .pagination { margin-bottom: 0; }
         .employee-pagination > nav { flex: 1 1 360px; }
         .employee-pagination form .form-select { min-width: 72px; }
+        .employee-pagination form { margin: 0; }
+        .employee-pagination > nav > div { align-items: center; }
+        .employee-pagination > nav > div:first-child { display: none !important; }
+        .employee-pagination > nav > div:nth-child(2) { display: flex !important; }
+        .employee-pagination > nav p { margin-bottom: 0; }
 
         @media (max-width: 992px) {
-            .app-sidebar { width: 224px; flex-basis: 224px; }
+            .app-sidebar { width: 224px; }
+            .app-main { margin-left: 224px; }
             .topbar, .dashboard-content { padding-left: 22px; padding-right: 22px; }
             .topbar { align-items: flex-start; flex-direction: column; }
-            .topbar-actions { justify-content: flex-start; }
+            .topbar-actions { flex-wrap: wrap; justify-content: flex-start; }
+            .filter-form { grid-template-columns: minmax(220px, 1fr) minmax(170px, 1fr) auto auto; }
+            .filter-submit, .filter-reset { width: 100%; }
         }
         @media (max-width: 640px) {
             .app-shell { display: block; }
-            .app-sidebar { width: 100%; min-height: auto; }
+            .app-sidebar { position: relative; width: 100%; height: auto; max-height: none; overflow: visible; }
+            .app-main { margin-left: 0; }
             .brand { min-height: 76px; padding: 14px 18px; }
             .sidebar-section { display: none; }
             .sidebar-user { display: none; }
@@ -91,6 +110,33 @@
             .dashboard-content { padding-top: 18px; }
             .records-heading { align-items: flex-start !important; flex-direction: column; padding-left: 16px !important; padding-right: 16px !important; }
             .filter-card .card-body { padding: 12px; }
+            .filter-form { grid-template-columns: 1fr; gap: 10px; }
+            .filter-submit, .filter-reset { width: 100%; }
+            .employee-pagination { align-items: stretch !important; flex-direction: column; }
+            .employee-pagination form, .employee-pagination > nav { width: 100%; }
+            .employee-pagination form { justify-content: space-between; }
+            .employee-pagination > nav > div:nth-child(2) { align-items: center; justify-content: space-between; gap: 12px; }
+            .employee-pagination > nav > div:nth-child(2) > div:first-child { flex: 1 1 auto; min-width: 0; }
+            .employee-pagination > nav > div:nth-child(2) > div:last-child { flex: 0 0 auto; max-width: 100%; overflow-x: auto; }
+            .employee-pagination > nav .pagination { justify-content: center; flex-wrap: nowrap; }
+            .employee-pagination > nav { flex-basis: auto; }
+            .employee-pagination { padding: 14px 16px; }
+            .records-card { border-radius: 14px; }
+            .records-card .table-responsive { overflow: visible; }
+            .employee-table { min-width: 0; display: block; }
+            .employee-table thead { display: none; }
+            .employee-table tbody { display: block; padding: 10px; background: #f8fafd; }
+            .employee-table tbody tr { display: block; margin-bottom: 10px; padding: 8px 14px; background: #fff; border: 1px solid var(--line); border-radius: 10px; box-shadow: 0 2px 7px rgba(24, 44, 75, .04); }
+            .employee-table tbody tr:last-child { margin-bottom: 0; }
+            .employee-table tbody td { display: flex; align-items: center; justify-content: space-between; gap: 14px; min-height: 42px; padding: 9px 0; border: 0; text-align: right; overflow-wrap: anywhere; }
+            .employee-table tbody td::before { flex: 0 0 92px; color: #71829d; content: attr(data-label); font-size: 10px; font-weight: 750; letter-spacing: .05em; text-align: left; text-transform: uppercase; }
+            .employee-table tbody td[data-label="Photo"] { justify-content: space-between; }
+            .employee-table tbody td[data-label="Photo"]::before { flex: 0 0 92px; align-self: center; }
+            .employee-table tbody td[data-label="Photo"] img { width: 44px; height: 44px; flex: 0 0 44px; margin-left: auto; }
+            .employee-table tbody td[data-label="Actions"] { justify-content: space-between; padding-top: 12px; border-top: 1px solid var(--line); }
+            .employee-table tbody td[data-label="Actions"]::before { align-self: center; }
+            .employee-table tbody td[data-label="Actions"] .d-inline { display: inline-flex !important; gap: 5px; }
+            .employee-table tbody td[data-label="Actions"] form { margin-left: 0; }
         }
     </style>
 </head>
@@ -115,7 +161,7 @@
         </div>
         <div class="sidebar-section">
             <div class="sidebar-label">Data exchange</div>
-            <a href="{{ route('employees.export') }}" class="sidebar-link">
+            <a href="{{ route('employees.export', request()->only(['search', 'education', 'sort', 'dir'])) }}" class="sidebar-link">
                 <i class="bi bi-download"></i><span>Export to Excel (.xlsx)</span>
             </a>
             <a href="#" class="sidebar-link" data-bs-toggle="modal" data-bs-target="#importModal">
@@ -131,7 +177,7 @@
             </div>
             <div class="topbar-actions">
                 <a href="{{ route('employees.create') }}" class="btn btn-primary"><i class="bi bi-plus-lg me-1"></i> Add Employee</a>
-                <a href="{{ route('employees.export') }}" class="btn btn-dark text-white"><i class="bi bi-download me-1"></i> Export Excel</a>
+                <a href="{{ route('employees.export', request()->only(['search', 'education', 'sort', 'dir'])) }}" class="btn btn-dark text-white"><i class="bi bi-download me-1"></i> Export Excel</a>
                 <button class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#importModal"><i class="bi bi-upload me-1"></i> Import Excel</button>
             </div>
         </header>
