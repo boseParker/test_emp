@@ -204,6 +204,29 @@
     </main>
 </div>
 
+<div class="modal fade" id="importModal" tabindex="-1">
+    <div class="modal-dialog">
+        <form action="{{ route('employees.import') }}" method="POST" enctype="multipart/form-data" class="modal-content">
+            @csrf
+            <div class="modal-header">
+                <h5 class="modal-title">Import Employees from Excel</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p class="small text-muted">
+                    First row must have these headings:<br>
+                    <code>firstname, lastname, date_of_birth, education_qualification, address, email, phone</code>
+                </p>
+                <input type="file" name="file" class="form-control" accept=".xlsx,.xls,.csv" required>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button class="btn btn-primary">Import</button>
+            </div>
+        </form>
+    </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

@@ -5,6 +5,11 @@
 .env.production
 .phpactor.json
 .phpunit.result.cache
+/coverage
+/coverage.xml
+/junit.xml
+/test-results
+/test-results.xml
 /.fleet
 /.idea
 /.nova

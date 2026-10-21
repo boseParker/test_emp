@@ -8,6 +8,7 @@ use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithValidation;
 use PhpOffice\PhpSpreadsheet\Shared\Date;
+use Illuminate\Validation\Rule;
 
 class EmployeesImport implements ToModel, WithHeadingRow, WithValidation
 {
@@ -53,7 +54,7 @@ class EmployeesImport implements ToModel, WithHeadingRow, WithValidation
             'firstname'               => 'required|string|max:100',
             'lastname'                => 'required|string|max:100',
             'date_of_birth'           => 'required|date',
-            'education_qualification' => 'required|string|max:100',
+            'education_qualification' => ['required', Rule::in(Employee::QUALIFICATIONS)],
             'address'                 => 'required|string',
             'email'                   => 'required|email|unique:employees,email',
             'phone'                   => 'required|digits:10',
